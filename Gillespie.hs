@@ -2,7 +2,6 @@ module Gillespie where
 
 import qualified Data.Map as M
 import System.Random
-import "mtl" Control.Monad.State
 
 
 -- Data types.
@@ -27,7 +26,6 @@ data CurrentState = CurrentState {
     time_ :: Time,
     randoms_ :: [Int]
   } deriving Show
-type GillespieState a = State CurrentState a
 
 
 -- Initialize and start main loop.
@@ -43,6 +41,7 @@ initialize nParticles = do
   rng <- getStdGen
   return $ CurrentState rng nParticles 0 0 []
 
+
 -- Main loop.
 mainLoop :: CurrentState -> Reactions -> StopCondition -> CurrentState
 mainLoop state reactions stopCondition =
@@ -51,26 +50,25 @@ mainLoop state reactions stopCondition =
     _ -> case stopCondition of
       Steps stop -> 
         if steps_ state < stop 
-          then mainLoop (execState step state) reactions stopCondition
+          then mainLoop (step state) reactions stopCondition
           else state
       Time stop ->
         if time_ state < stop 
-          then mainLoop (execState step state) reactions stopCondition
+          then mainLoop (step state) reactions stopCondition
           else state
 
 
 -- One Gillespie step.
-step :: GillespieState ()
-step = do
-  state <- get
+step :: CurrentState -> CurrentState
+step state = 
   let (val, gen') = random (rng_ state)
       particleMap = particleMap_ state
       steps = steps_ state
       time = time_ state
       randoms = randoms_ state
       (particleMap', time') = update val particleMap time
-  put $ CurrentState gen' particleMap' (steps + 1) time' (val:randoms)
-  return ()
+  in
+  CurrentState gen' particleMap' (steps + 1) time' (val:randoms)
 
 update :: Int -> NParticles -> Time -> (NParticles, Time)
 update _ particleMap time = (particleMap, time)
