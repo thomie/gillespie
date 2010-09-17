@@ -34,14 +34,9 @@ data CurrentState = CurrentState {
 -- Initialize and start main loop.
 gillespie :: ParticleData -> Reactions -> StopCondition -> IO (CurrentState)
 gillespie particleData reactions stopCondition = do
-  initialState <- initialize particleData
-  return $ mainLoop initialState reactions stopCondition
-
--- Initalize the random number generator, steps and time.
-initialize :: ParticleData -> IO CurrentState
-initialize nParticles = do
   rng <- R.getStdGen
-  return $ CurrentState rng nParticles 0 0
+  let initialState = CurrentState rng particleData 0 0
+  return $ mainLoop initialState reactions stopCondition
 
 -- Main loop.
 mainLoop :: CurrentState -> Reactions -> StopCondition -> CurrentState
