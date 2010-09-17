@@ -17,11 +17,12 @@ type Reactions = [Reaction]
 type Rate = Float
 type Propensity = Float
 type Species = String
+type Copies = Integer
+type ParticleData = M.Map Species Copies
 type Steps = Integer
 type Time = Float
-type Random = Float
-type ParticleData = M.Map Species Integer
 data StopCondition = Time Float | Steps Integer
+type Random = Float
 
 data CurrentState = CurrentState {
     rng :: R.StdGen,
@@ -105,13 +106,13 @@ propensity particleData reaction =
 -- Given a mapping between species and number of particles and a list of (not 
 -- necessarily unique) species, return a list with the number of particles for 
 -- each species.
-copyNumbers :: ParticleData -> [Species] -> [Integer]
+copyNumbers :: ParticleData -> [Species] -> [Copies]
 copyNumbers particleData =
   map $ \species -> M.findWithDefault 0 species particleData
 
 -- Given a list of species and a list with the number of particles for each 
 -- species, compute the number of distinct combinations of particles.
-combinationsOfParticles :: [Species] -> [Integer]  -> Float
+combinationsOfParticles :: [Species] -> [Copies]  -> Float
 combinationsOfParticles species copies = 
   if length species == 2 && (species!!0 == species!!1)
     then fromIntegral (copies!!0 * (copies!!1 - 1)) / 2
