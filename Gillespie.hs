@@ -54,23 +54,16 @@ mainLoop state reactions stopCondition =
       Steps maxSteps -> if steps state < maxSteps then next else stop
       Time maxTime -> if time state < maxTime then next else stop
 
--- Update state after 1 Gillespie step.
+-- Execute 1 Gillespie step.
 updateState :: CurrentState -> Reactions -> CurrentState
 updateState state reactions = 
   let (r1, gen') = R.random (rng state)
       (r2, gen'') = R.random (rng state {rng = gen'})
-      (particleData', time') = step r1 r2 state reactions
-      steps' = steps state + 1 
-  in
-  CurrentState gen'' particleData' steps' time'
-
--- Execute one Gillespie step.
-step :: Random -> Random -> CurrentState -> Reactions -> (ParticleData, Time)
-step r1 r2 state reactions =
-  let (reaction, a0) = drawReaction r2 state reactions
+      (reaction, a0) = drawReaction r2 state reactions
       time' = time state + drawTime r1 a0  
-      particleData' = updateParticleData reaction (particleData state) in
-  (particleData', time')
+      particleData' = updateParticleData reaction (particleData state)
+      steps' = steps state + 1 in
+  CurrentState gen'' particleData' steps' time'
 
 -- Draw next reaction given a random number, the current state of the system 
 -- and a list of reactions. Also return a0.
