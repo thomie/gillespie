@@ -1,21 +1,20 @@
 import Gillespie
 import Data.Map
 
-main = do
-  result <- runGillespie particleMap reactions stopCondition
-  putStrLn $ show result
+main = gillespie pData reactions stopCondition
 
 -- Species.
 a = "A"
 b = "B"
 
--- Number of particles.
-particleMap = fromList [(a, 300), (b, 100)]
+-- Number of particles per species.
+-- Steady state is (300, 100).
+pData = fromList [(a, 100), (b, 200)]
 
 -- Reactions.
 reactions = 
-  [Reaction [a] [b] 2,
-   Reaction [b] [a, a] 2]
+  [Reaction [a, a] [b] 0.1,
+   Reaction [b] [a, a] 45.0]
 
 -- Stop condition.
-stopCondition = Steps 10
+stopCondition = Time 1
