@@ -21,7 +21,7 @@ type Copies = Integer
 type ParticleData = M.Map Species Copies
 type Steps = Integer
 type Time = Float
-data StopCondition = Time Float | Steps Integer
+data StopCondition = MaxTime Time | MaxSteps Steps
 type Random = Float
 
 data CurrentState = CurrentState {
@@ -46,8 +46,8 @@ mainLoop state reactions stopCondition =
   case (sum . M.elems. particleData) state of
     0 -> stop
     _ -> case stopCondition of
-      Steps maxSteps -> if steps state < maxSteps then next else stop
-      Time maxTime -> if time state < maxTime then next else stop
+      MaxSteps maxSteps -> if steps state < maxSteps then next else stop
+      MaxTime maxTime -> if time state < maxTime then next else stop
 
 -- Execute 1 Gillespie step.
 updateState :: CurrentState -> Reactions -> CurrentState

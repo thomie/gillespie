@@ -1,1 +1,8 @@
+$ ghc -O2 --make simulation.hs
+$ ./simulation
+
+or
+
 $ runhaskell simulation.hs
+
+

@@ -1,7 +1,9 @@
 import Gillespie
 import Data.Map
 
-main = gillespie pData reactions stopCondition
+main = do
+  result <- gillespie pData reactions stopCondition
+  print result
 
 -- Species.
 a = "A"
@@ -17,4 +19,5 @@ reactions =
    Reaction [b] [a, a] 45.0]
 
 -- Stop condition.
-stopCondition = Time 1
+--stopCondition = MaxTime 10
+stopCondition = MaxSteps 100000
