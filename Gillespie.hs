@@ -25,10 +25,10 @@ data StopCondition = Time Float | Steps Integer
 type Random = Float
 
 data CurrentState = CurrentState {
-    rng :: R.StdGen,
-    particleData :: ParticleData,
-    steps :: Steps,
-    time :: Time
+    rng :: !R.StdGen,
+    particleData :: !ParticleData,
+    steps :: !Steps,
+    time :: !Time
   } deriving Show
 
 -- Initialize and start main loop.
