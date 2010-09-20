@@ -52,21 +52,21 @@ mainLoop state reactions stopCondition =
 -- Execute 1 Gillespie step.
 updateState :: CurrentState -> Reactions -> CurrentState
 updateState state reactions = 
-  let (r1, gen') = drawRandom (rng state) 
-      (r2, gen'') = drawRandom (rng state {rng = gen'})
+  let (r1, r2, generator') = drawTwoRandoms (rng state) 
       (reaction, a0) = drawReaction r2 state reactions
       time' = time state + drawTime r1 a0  
       particleData' = updateParticleData reaction (particleData state)
       steps' = steps state + 1 in
-  CurrentState gen'' particleData' steps' time'
+  CurrentState generator' particleData' steps' time'
 
 -- Draw a random number in the interval (0, 1). So exclude the 0.
-drawRandom :: R.StdGen -> (Random, R.StdGen)
-drawRandom generator =
-  let (r, generator') = R.random generator in
-  if r == 0.0
-    then drawRandom generator'
-    else (r, generator') 
+drawTwoRandoms :: R.StdGen -> (Random, Random, R.StdGen)
+drawTwoRandoms generator =
+  let (r1, generator') = R.random generator
+      (r2, generator'') = R.random generator' in
+  if r1 == 0.0 || r2 == 0
+    then drawTwoRandoms generator''
+    else (r1, r2, generator'') 
 
 -- Draw next reaction given a random number, the current state of the system 
 -- and a list of reactions. Also return a0.
