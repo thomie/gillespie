@@ -75,7 +75,7 @@ drawReaction r state reactions =
    let propensities = map (propensity (particleData state)) reactions
        accumulatedPropensities = scanl1 (+) propensities 
        a0 = last accumulatedPropensities
-       Just index = L.findIndex ((r * a0) <) accumulatedPropensities
+       Just index = L.findIndex ((r * a0) <=) accumulatedPropensities
        reaction = reactions !! index in
   (reaction, a0)
 
