@@ -22,7 +22,7 @@ type ParticleData = M.Map Species Copies
 type Steps = Int
 type Time = Double
 data StopCondition = MaxTime Time | MaxSteps Steps
-type Random = Double
+type RandomDouble = Double
 
 data CurrentState = CurrentState {
     rng :: !R.PureMT,
@@ -60,7 +60,7 @@ updateState state reactions =
   CurrentState generator' particleData' steps' time'
 
 -- Draw a random number in the interval (0, 1). So exclude the 0.
-drawTwoRandoms :: R.PureMT -> (Random, Random, R.PureMT)
+drawTwoRandoms :: R.PureMT -> (RandomDouble, RandomDouble, R.PureMT)
 drawTwoRandoms generator =
   let (r1, generator') = R.randomDouble generator
       (r2, generator'') = R.randomDouble generator' in
@@ -70,7 +70,7 @@ drawTwoRandoms generator =
 
 -- Draw next reaction given a random number, the current state of the system 
 -- and a list of reactions. Also return a0.
-drawReaction :: Random -> CurrentState -> Reactions -> (Reaction, Propensity)
+drawReaction :: RandomDouble -> CurrentState -> Reactions -> (Reaction, Propensity)
 drawReaction r state reactions =
    let propensities = map (propensity (particleData state)) reactions
        accumulatedPropensities = scanl1 (+) propensities 
@@ -80,7 +80,7 @@ drawReaction r state reactions =
   (reaction, a0)
 
 -- Draw next reaction time given a random number and a0.
-drawTime :: Random -> Propensity -> Time
+drawTime :: RandomDouble -> Propensity -> Time
 drawTime r a0 = log r / (- a0)
 
 -- Update particleData given a reaction.
