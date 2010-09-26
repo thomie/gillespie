@@ -7,22 +7,22 @@ $ ./simulation
 
 
 ### Prerequisites
-This package depends on the package mersenne-random-pure64.  
+This package depends on the package 'mersenne-random-pure64'.
 
-To install it, make sure you have the package cabal-install installed.
+To install it, make sure you have the package 'cabal-install' installed.
 
 "The 'cabal' command-line program simplifies the process of managing Haskell software by automating the fetching, configuration, compilation and installation of Haskell libraries and programs."
 
-The recommended way of getting cabal-install is through the Haskell platform: http://hackage.haskell.org/platform/.
+The recommended way of getting 'cabal-install' is through the 'Haskell platform': http://hackage.haskell.org/platform/.
 
-You can also install cabal-install manually: http://hackage.haskell.org/package/cabal-install. If the bootstrap script complains about a missing time library, install it manually: http://hackage.haskell.org/package/time-1.2 (cabal-install version 0.8.2. says it depends on time version < 1.2).
+You can also install 'cabal-install' manually: http://hackage.haskell.org/package/cabal-install. If the bootstrap script complains about a missing 'time' library, install it manually: http://hackage.haskell.org/package/time-1.1.4 (cabal-install version 0.8.2. says it depends on time version < 1.2).
 
-When you have cabal-install installed and 'cabal' is in your path, do:
+When you have 'cabal-install' installed and 'cabal' is in your path, do:
 
 $ cabal update
 $ cabal install mersenne-random-pure64
 
-As a third option, you can try to install mersenne-random-pure64 manually: http://hackage.haskell.org/package/mersenne-random-pure64.
+As a third option, you can try to install 'mersenne-random-pure64' manually: http://hackage.haskell.org/package/mersenne-random-pure64.
 
 
 
