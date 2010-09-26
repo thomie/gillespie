@@ -4,7 +4,7 @@ module Gillespie where
 
 import qualified Data.List as L
 import qualified Data.Map as M
-import qualified System.Random as R
+import System.Random.Mersenne.Pure64 as R
 
 -- Data types.
 data Reaction = Reaction
@@ -25,7 +25,7 @@ data StopCondition = MaxTime Time | MaxSteps Steps
 type Random = Double
 
 data CurrentState = CurrentState {
-    rng :: !R.StdGen,
+    rng :: !R.PureMT,
     particleData :: !ParticleData,
     steps :: !Steps,
     time :: !Time
@@ -34,7 +34,7 @@ data CurrentState = CurrentState {
 -- Initialize and start main loop.
 gillespie :: ParticleData -> Reactions -> StopCondition -> IO (CurrentState)
 gillespie particleData reactions stopCondition = do
-  rng <- R.getStdGen
+  rng <- R.newPureMT
   let initialState = CurrentState rng particleData 0 0
   return $ mainLoop initialState reactions stopCondition
 
@@ -60,10 +60,10 @@ updateState state reactions =
   CurrentState generator' particleData' steps' time'
 
 -- Draw a random number in the interval (0, 1). So exclude the 0.
-drawTwoRandoms :: R.StdGen -> (Random, Random, R.StdGen)
+drawTwoRandoms :: R.PureMT -> (Random, Random, R.PureMT)
 drawTwoRandoms generator =
-  let (r1, generator') = R.random generator
-      (r2, generator'') = R.random generator' in
+  let (r1, generator') = R.randomDouble generator
+      (r2, generator'') = R.randomDouble generator' in
   if r1 == 0.0 || r2 == 0
     then drawTwoRandoms generator''
     else (r1, r2, generator'') 
