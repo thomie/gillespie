@@ -14,15 +14,15 @@ data Reaction = Reaction
   deriving Show
 
 type Reactions = [Reaction]
-type Rate = Float
-type Propensity = Float
+type Rate = Double
+type Propensity = Double
 type Species = String
 type Copies = Int
 type ParticleData = M.Map Species Copies
 type Steps = Int
-type Time = Float
+type Time = Double
 data StopCondition = MaxTime Time | MaxSteps Steps
-type Random = Float
+type Random = Double
 
 data CurrentState = CurrentState {
     rng :: !R.StdGen,
@@ -108,7 +108,7 @@ copyNumbers particleData =
 
 -- Given a list of species and a list with the number of particles for each 
 -- species, compute the number of distinct combinations of particles.
-combinationsOfParticles :: [Species] -> [Copies]  -> Float
+combinationsOfParticles :: [Species] -> [Copies]  -> Double
 combinationsOfParticles species copies = 
   if length species == 2 && (species!!0 == species!!1)
     then fromIntegral (copies!!0 * (copies!!1 - 1)) / 2
