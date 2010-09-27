@@ -9,7 +9,7 @@ tests = [test0, test1, test2, test3, test4]
 a = "A"
 b = "B"
 
-test0 = -- binding, same reactant, creation of product.
+test0 = -- Binding reaction: same reactant, creation of product.
   let pData = fromList [(a, 10)]
       reaction = Reaction [a, a] [b] 1
       propensity' = propensity pData reaction
@@ -18,7 +18,7 @@ test0 = -- binding, same reactant, creation of product.
       expectedPData = fromList [(a, 8), (b, 1)] in
   TestCase $ (expectedPropensity @=? propensity') >> (expectedPData @=? pData')
 
-test1 = -- annihilation, different product
+test1 = -- Annihilation reaction: different reactant.
   let pData = fromList [(a, 30), (b, 10)]
       reaction = Reaction [a, b] [] 1
       propensity' = propensity pData reaction
@@ -27,7 +27,7 @@ test1 = -- annihilation, different product
       expectedPData = fromList [(a, 29), (b, 9)] in
   TestCase $ (expectedPropensity @=? propensity') >> (expectedPData @=? pData')
 
-test2 = -- unimolecular
+test2 = -- Unimolecular reaction.
   let pData = fromList [(a, 30), (b, 10)]
       reaction = Reaction [a] [b] 1
       propensity' = propensity pData reaction
@@ -36,14 +36,14 @@ test2 = -- unimolecular
       expectedPData = fromList [(a, 29), (b, 11)] in
   TestCase $ (expectedPropensity @=? propensity') >> (expectedPData @=? pData')
 
-test3 = -- decay
+test3 = -- Decay reaction.
   let pData = fromList [(a, 30), (b, 10)]
       reaction = Reaction [b] [] 1
       pData' = updateParticleData reaction pData
       expectedPData = fromList [(a, 30), (b, 9)] in
   expectedPData ~=? pData'
 
-test4 = -- unbinding
+test4 = -- Unbinding reactino.
   let pData = fromList [(a, 30), (b, 10)]
       reaction = Reaction [b] [a, a] 1
       propensity' = propensity pData reaction
