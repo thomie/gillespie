@@ -20,6 +20,7 @@ To install it, make sure you have the package 'cabal-install' installed.
 The recommended way of getting 'cabal-install' is through the 'Haskell platform': http://hackage.haskell.org/platform/.
 
 You can also install 'cabal-install' manually: http://hackage.haskell.org/package/cabal-install. If the bootstrap script complains about a missing 'time' library, install it manually: http://hackage.haskell.org/package/time-1.1.4 (cabal-install version 0.8.2. says it depends on time version < 1.2).
+(http://hackage.haskell.org/trac/hackage/ticket/743 and 744).
 
 When you have 'cabal-install' installed and 'cabal' is in your path, do:
 
