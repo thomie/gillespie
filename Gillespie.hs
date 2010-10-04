@@ -8,8 +8,8 @@ import System.Random.Mersenne.Pure64 as R
 
 -- Data types.
 data Reaction = Reaction
-  {reactants :: [Species],
-   products :: [Species],
+  {reactants :: Reactants,
+   products :: Products,
    rate :: Rate,
    updateParticleData :: (ParticleData -> ParticleData)}
 
@@ -17,6 +17,8 @@ type Reactions = [Reaction]
 type Rate = Double
 type Propensity = Double
 type Species = String
+type Reactants = [Species]
+type Products = [Species]
 type Copies = Int
 type ParticleData = M.Map Species Copies
 type Steps = Int
@@ -32,13 +34,13 @@ data CurrentState = CurrentState {
   } deriving Show
 
 -- Create a Reaction.
-createReaction :: [Species] -> [Species] -> Rate -> Reaction
+createReaction :: Reactants -> Products -> Rate -> Reaction
 createReaction reactants products rate =
   Reaction reactants products rate (particleDataUpdater reactants products)
 
 -- Create a function to update the particleData, given the list of reactants 
 -- and the list of products of a reaction.
-particleDataUpdater :: [Species] -> [Species] -> ParticleData -> ParticleData
+particleDataUpdater :: Reactants -> Products -> ParticleData -> ParticleData
 particleDataUpdater reactants products =
   let reactantUpdaters = map (M.adjust (\n -> n - 1)) reactants
       -- Insert product if it does not exists yet, update otherwise.
