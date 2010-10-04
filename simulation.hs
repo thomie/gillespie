@@ -15,8 +15,8 @@ pData = fromList [(a, 100), (b, 200)]
 
 -- Reactions.
 reactions = 
-  [Reaction [a, a] [b] 0.1,
-   Reaction [b] [a, a] 45.0]
+  [createReaction [a, a] [b] 0.1,
+   createReaction [b] [a, a] 45.0]
 
 -- Stop condition.
 --stopCondition = MaxTime 10

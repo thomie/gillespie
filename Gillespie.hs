@@ -10,8 +10,8 @@ import System.Random.Mersenne.Pure64 as R
 data Reaction = Reaction
   {reactants :: [Species],
    products :: [Species],
-   rate :: Rate}
-  deriving Show
+   rate :: Rate,
+   updateParticleData :: (ParticleData -> ParticleData)}
 
 type Reactions = [Reaction]
 type Rate = Double
@@ -30,6 +30,21 @@ data CurrentState = CurrentState {
     steps :: !Steps,
     time :: !Time
   } deriving Show
+
+-- Create a Reaction.
+createReaction :: [Species] -> [Species] -> Rate -> Reaction
+createReaction reactants products rate =
+  Reaction reactants products rate (particleDataUpdater reactants products)
+
+-- Create a function to update the particleData, given the list of reactants 
+-- and the list of products of a reaction.
+particleDataUpdater :: [Species] -> [Species] -> ParticleData -> ParticleData
+particleDataUpdater reactants products =
+  let reactantUpdaters = map (M.adjust (\n -> n - 1)) reactants
+      -- Insert product if it does not exists yet, update otherwise.
+      productUpdater = \key -> M.insertWith (\_ n -> n + 1) key 1
+      productUpdaters = map productUpdater products in
+  foldl1 (.) (reactantUpdaters ++ productUpdaters)
 
 -- Initialize and start main loop.
 gillespie :: ParticleData -> Reactions -> StopCondition -> IO (CurrentState)
@@ -82,15 +97,6 @@ drawReaction r state reactions =
 -- Draw next reaction time given a random number and a0.
 drawTime :: RandomDouble -> Propensity -> Time
 drawTime r a0 = log r / (- a0)
-
--- Update particleData given a reaction.
-updateParticleData :: Reaction -> ParticleData -> ParticleData
-updateParticleData reaction =
-  let reactantUpdaters = map (M.adjust (\n -> n - 1)) $ reactants reaction
-      -- Insert product if it does not exists yet, update otherwise.
-      productUpdater = \key -> M.insertWith (\_ n -> n + 1) key 1
-      productUpdaters = map productUpdater $ products reaction in
-  foldl1 (.) (reactantUpdaters ++ productUpdaters)
 
 -- Calculate propensity aj.
 propensity :: ParticleData -> Reaction -> Propensity
