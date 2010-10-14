@@ -1,4 +1,8 @@
 
+### Introduction
+This package implement the direct method Gillespie's algorithm. It can be used for simulating biochemical reaction networks. See http://en.wikipedia.org/wiki/Gillespie_algorithm for more information.
+
+
 ### Quickstart
 $ cabal install mersenne-random-pure64
 $ ghc -O2 --make simulation.hs
