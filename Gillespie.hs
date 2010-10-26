@@ -36,7 +36,7 @@ data CurrentState = CurrentState {
 -- Create a Reaction.
 createReaction :: Reactants -> Products -> Rate -> Reaction
 createReaction reactants products rate =
-  Reaction reactants products rate (particleDataUpdater reactants products)
+  Reaction reactants products rate $ particleDataUpdater reactants products
 
 -- Create a function to update the particleData, given the list of reactants 
 -- and the list of products of a reaction.
@@ -49,8 +49,9 @@ particleDataUpdater reactants products =
   foldl1 (.) (reactantUpdaters ++ productUpdaters)
 
 -- Initialize and start main loop.
-gillespie :: ParticleData -> Reactions -> StopCondition -> IO (CurrentState)
+gillespie :: ParticleData -> Reactions -> StopCondition -> IO CurrentState
 gillespie particleData reactions stopCondition = do
+  --let rng = (R.pureMT 0)
   rng <- R.newPureMT
   let initialState = CurrentState rng particleData 0 0
   return $ mainLoop initialState reactions stopCondition
@@ -60,7 +61,7 @@ mainLoop :: CurrentState -> Reactions -> StopCondition -> CurrentState
 mainLoop state reactions stopCondition =
   let next = mainLoop (updateState state reactions) reactions stopCondition
       stop = state in
-  case (sum . M.elems. particleData) state of
+  case (sum . M.elems . particleData) state of
     0 -> stop
     _ -> case stopCondition of
       MaxSteps maxSteps -> if steps state < maxSteps then next else stop
@@ -89,7 +90,7 @@ drawTwoRandoms generator =
 -- and a list of reactions. Also return a0.
 drawReaction :: RandomDouble -> CurrentState -> Reactions -> (Reaction, Propensity)
 drawReaction r state reactions =
-   let propensities = map (propensity (particleData state)) reactions
+   let propensities = map ((propensity . particleData) state) reactions
        accumulatedPropensities = scanl1 (+) propensities 
        a0 = last accumulatedPropensities
        Just index = L.findIndex ((r * a0) <=) accumulatedPropensities
