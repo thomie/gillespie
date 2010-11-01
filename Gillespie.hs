@@ -82,7 +82,7 @@ drawTwoRandoms :: R.PureMT -> (RandomDouble, RandomDouble, R.PureMT)
 drawTwoRandoms generator =
   let (r1, generator') = R.randomDouble generator
       (r2, generator'') = R.randomDouble generator' in
-  if r1 == 0.0 || r2 == 0
+  if r1 == 0.0 || r2 == 0.0
     then drawTwoRandoms generator''
     else (r1, r2, generator'') 
 
