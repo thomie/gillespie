@@ -15,6 +15,7 @@ pData = fromList [(a, 100), (b, 200)]
 
 -- Reactions.
 reactions = 
-  [createReaction [a, a] [b] 0.1,
-   createReaction [b] [a, a] 45.0]
+    [ createReaction [a, a] [b] 0.1
+    , createReaction [b] [a, a] 45.0
+    ]
 
